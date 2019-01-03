@@ -1,26 +1,44 @@
 package epsi.javamspr.springbootapi.Models;
 
 public class Tool {
-    public Object Name;
-    public Number Quantity;
+    private int Id;
+    private String Name;
+    private Number Quantity;
 
-    public Tool(String format) {
+    //********** CONSTRUCTEUR ************
+    public Tool(String Name, Number Quantity, int Id){
+        this.Id = Id;
+        this.Name = Name;
+        this.Quantity = Quantity;
     }
+
     public Tool(String Name, Number Quantity){
         this.Name = Name;
         this.Quantity = Quantity;
     }
 
-    public void setName(String Name) {
-        this.Name = Name;
+    //**********GETTER SETTER ************
+    //Id
+    public int getId() {
+        return Id;
+    }
+    public void setId(int id) {
+        Id = id;
     }
 
-    public void setQuantity(Number Quantity) {
-        this.Quantity = Quantity;
+    //Name
+    public String getName() {
+        return Name;
+    }
+    public void setName(String name) {
+        Name = name;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Tool [Name=%s, Quantity=%s]", Name, Quantity);
+    // Quantity
+    public Number getQuantity() {
+        return Quantity;
+    }
+    public void setQuantity(Number quantity) {
+        Quantity = quantity;
     }
 }
