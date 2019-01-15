@@ -1,7 +1,9 @@
 package epsi.javamspr.springbootapi.Services;
-import java.util.Map;
+import epsi.javamspr.springbootapi.Models.Tool;
+
+import java.util.List;
 
 public interface ToolService {
-    Map<String, Object> getTools () throws Exception;
+    List<Tool> getTools () throws Exception;
     Object getTool () throws Exception;
 }

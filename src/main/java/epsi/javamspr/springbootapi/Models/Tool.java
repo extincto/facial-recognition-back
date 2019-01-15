@@ -1,20 +1,27 @@
 package epsi.javamspr.springbootapi.Models;
 
+import com.google.firebase.internal.NonNull;
+
+import java.util.Map;
+
 public class Tool {
     private int Id;
     private String Name;
-    private Number Quantity;
+    private int Quantity;
 
     //********** CONSTRUCTEUR ************
-    public Tool(String Name, Number Quantity, int Id){
+    public Tool(String Name, int Quantity, int Id){
         this.Id = Id;
         this.Name = Name;
         this.Quantity = Quantity;
     }
 
-    public Tool(String Name, Number Quantity){
+    public Tool(String Name, int Quantity){
         this.Name = Name;
         this.Quantity = Quantity;
+    }
+    public Tool()  {
+
     }
 
     //**********GETTER SETTER ************
@@ -35,10 +42,17 @@ public class Tool {
     }
 
     // Quantity
-    public Number getQuantity() {
+    public int getQuantity() {
         return Quantity;
     }
-    public void setQuantity(Number quantity) {
+    public void setQuantity(int quantity) {
         Quantity = quantity;
     }
+
+    public Tool withId(@NonNull final String Id) {
+        int NewId = Integer.parseInt(Id);
+        this.Id = NewId;
+        return (Tool) this;
+    }
 }
+

@@ -2,33 +2,41 @@ package epsi.javamspr.springbootapi.Models;
 
 
 public class User {
-    private int Id;
+    public Number Id;
     private String FirstName;
     private String LastName;
     private String Email;
     private String Sexe;
+    public String ImageUrl;
 
     //********** CONSTRUCTEUR ************
-    public User(String FirsName, String LastName, String Email, String Sexe) {
+
+    public User(){
+
+    }
+    public User(String FirsName, String LastName, String Email, String Sexe, String ImageUrl) {
         this.FirstName = FirsName;
         this.LastName = LastName;
         this.Email = Email;
         this.Sexe = Sexe;
+        this.ImageUrl = ImageUrl;
     }
 
-    public User(String FirsName, String LastName, String Email, String Sexe, int Id) {
+    public User(String FirsName, String LastName, String Email, String Sexe, Number Id, String ImageUrl) {
         this.Id = Id;
         this.FirstName = FirsName;
         this.LastName = LastName;
         this.Email = Email;
         this.Sexe = Sexe;
+        this.ImageUrl = ImageUrl;
+
     }
     //**********GETTER SETTER ************
     //Id
-    public int getId() {
+    public Number getId() {
         return Id;
     }
-    public void setId(int id) {
+    public void setId(Number id) {
         Id = id;
     }
 
@@ -62,6 +70,14 @@ public class User {
     }
     public void setSexe(String sexe) {
         Sexe = sexe;
+    }
+
+    //ImageUrl
+    public String getImageUrl() {
+        return ImageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
     }
 }
 

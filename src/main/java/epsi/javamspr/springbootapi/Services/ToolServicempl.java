@@ -2,24 +2,29 @@ package epsi.javamspr.springbootapi.Services;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import epsi.javamspr.springbootapi.Models.Tool;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ToolServicempl implements ToolService {
-    public Map<String, Object> data;
-
-    @Override
-    public Map<String, Object> getTools() throws Exception {
+    /**
+     * Return all documents in the cities collection.
+     *
+     * @return list of documents
+     */
+    public List<Tool> getTools() throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = db.collection("Tools").get();
+        List<Tool> ToolList = new ArrayList<>();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot document : documents) {
-            data = document.getData();
-            System.out.println(document.getData());
+            ToolList.add(( document.toObject(Tool.class).withId(document.getId())));
+            System.out.println(document.getId() + " => " + document.getData());
         }
-        return data;
+        return ToolList;
     }
     public Object getTool() throws Exception {
         Firestore db = FirestoreClient.getFirestore();
@@ -28,11 +33,22 @@ public class ToolServicempl implements ToolService {
         DocumentSnapshot document = future.get();
         if (document.exists()) {
             System.out.println("Material found: " + document.getData());
-            data = document.getData();
-            return data;
         } else {
             System.out.println("No such Material!");
         }
         return null;
     }
 }
+
+
+//    @Override
+//    public List<QueryDocumentSnapshot> getTools() throws Exception {
+//        Firestore db = FirestoreClient.getFirestore();
+//        ApiFuture<QuerySnapshot> future = db.collection("Tools").get();
+//        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+//        for (QueryDocumentSnapshot document : documents) {
+//            System.out.println(document.getData());
+//            document.toObject(Tool.class);
+//        }
+//        return documents;
+//    }
