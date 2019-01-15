@@ -3,15 +3,13 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import epsi.javamspr.springbootapi.Controllers.CompareFaces;
-import epsi.javamspr.springbootapi.Models.User;
+import epsi.javamspr.springbootapi.Models.Picture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -50,12 +48,23 @@ public class UserServicempl implements UserService {
     }
 
     public String postImage(String imageUrl) throws  Exception {
-        List<String> listeUrl = picturesServicempl.getPictures();
+        List<Picture> listeUrl = picturesServicempl.getPictures();
         CompareFaces.decodeToImage(imageUrl, "1");
-        for(String url: listeUrl) {
+        for(Picture url: listeUrl) {
             TimeUnit.SECONDS.sleep(10);
-            CompareFaces.decodeToImage(url, "2");
+            CompareFaces.decodeToImage(url.getImageUrl(), "2");
             CompareFaces.CompareForAuthentication();
+
+            Firestore db = FirestoreClient.getFirestore();
+            CollectionReference users = db.collection("Users");
+            // Create a query against the collection.
+            Query query = users.whereEqualTo("Id", url.getIdUser());
+            // retrieve  query results asynchronously using query.get()
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+            for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+                System.out.println(document.getData());
+            }
         }
         try{
             String filePath = new File("").getAbsolutePath();

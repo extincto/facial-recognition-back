@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PictureService {
 
-    List<String> getPictures() throws Exception;
+    List<Picture> getPictures() throws Exception;
 }

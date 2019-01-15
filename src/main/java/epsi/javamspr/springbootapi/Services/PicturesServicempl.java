@@ -15,7 +15,7 @@ import java.util.List;
 public class PicturesServicempl implements PictureService {
 
     @Override
-    public List<String>  getPictures() throws Exception {
+    public List<Picture>  getPictures() throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = db.collection("Pictures").get();
         List<Picture> PictureList = new ArrayList<>();
@@ -24,11 +24,11 @@ public class PicturesServicempl implements PictureService {
         for (QueryDocumentSnapshot document : documents) {
             PictureList.add((document.toObject(Picture.class)));
         }
-        for(Picture image64: PictureList){
-            UrlList.add(image64.getImageUrl());
-        }
+//        for(Picture image64: PictureList){
+//            UrlList.add(image64.getImageUrl());
+//        }
 
 
-        return UrlList;
+        return PictureList;
     }
 }
