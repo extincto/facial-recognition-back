@@ -18,7 +18,7 @@ import com.amazonaws.util.IOUtils;
 
 public class CompareFaces {
     public static void main(String[] args) throws Exception {
-        String photo="input.jpg";
+        String photo="C:/Users/yan/Desktop/Kheops.jpg";
 
 
         ByteBuffer imageBytes;
@@ -26,9 +26,13 @@ public class CompareFaces {
             imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
         }
 
-
         AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder.defaultClient();
-
+        try {
+            System.out.println(rekognitionClient);
+        }
+        catch(AmazonClientException e){
+            e.printStackTrace();
+        }
         DetectLabelsRequest request = new DetectLabelsRequest()
                 .withImage(new Image()
                         .withBytes(imageBytes))
