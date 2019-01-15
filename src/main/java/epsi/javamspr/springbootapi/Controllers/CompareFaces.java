@@ -18,7 +18,7 @@ import com.amazonaws.util.IOUtils;
 
 public class CompareFaces {
     public static void main(String[] args) throws Exception {
-        String photo="C:/Users/yan/Desktop/Kheops.jpg";
+        String photo="C:/Users/yan/Desktop/yancv.jpg";
 
 
         ByteBuffer imageBytes;
