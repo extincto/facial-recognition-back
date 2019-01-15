@@ -1,57 +1,88 @@
 package epsi.javamspr.springbootapi.Controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.List;
 
 import com.amazonaws.services.rekognition.AmazonRekognition;
 import com.amazonaws.services.rekognition.AmazonRekognitionClientBuilder;
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.services.rekognition.model.AmazonRekognitionException;
-import com.amazonaws.services.rekognition.model.DetectLabelsRequest;
-import com.amazonaws.services.rekognition.model.DetectLabelsResult;
-import com.amazonaws.services.rekognition.model.Image;
-import com.amazonaws.services.rekognition.model.Label;
+import com.amazonaws.services.rekognition.model.*;
 import com.amazonaws.util.IOUtils;
+import software.amazon.awssdk.utils.StringUtils;
+
 
 public class CompareFaces {
-    public static void main(String[] args) throws Exception {
-        String photo="C:/Users/yan/Desktop/yancv.jpg";
+    public static void main(String[] args) throws Exception{
+    }
+    public static void decodeToImage(String imageString, String id) throws Exception {
+        String filePath = new File("").getAbsolutePath();
+        String imageDataBytes = imageString.substring(imageString.indexOf(",")+1);
+        byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(imageDataBytes);
+        File of = new File(filePath.concat("\\src\\main\\resources\\")+"image"+id+".jpeg");
+        FileOutputStream osf = new FileOutputStream(of);
+        osf.write(btDataFile);
+        osf.flush();
+        osf.close();
+    }
 
-
-        ByteBuffer imageBytes;
-        try (InputStream inputStream = new FileInputStream(new File(photo))) {
-            imageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
-        }
+    public static void CompareForAuthentication() throws Exception{
+        String filePath = new File("").getAbsolutePath();
+        String sourceImage = filePath.concat("\\src\\main\\resources\\image1.jpeg");
+        String targetImage = filePath.concat("\\src\\main\\resources\\image2.jpeg");
+        Float similarityThreshold = 70F;
+        ByteBuffer sourceImageBytes=null;
+        ByteBuffer targetImageBytes=null;
 
         AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder.defaultClient();
-        try {
-            System.out.println(rekognitionClient);
+
+        //Load source and target images
+        try (InputStream inputStream = new FileInputStream(new File(sourceImage))) {
+            sourceImageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
         }
-        catch(AmazonClientException e){
-            e.printStackTrace();
+        catch(Exception e)
+        {
+            System.out.println("Failed to load source image " + sourceImage);
+            System.exit(1);
         }
-        DetectLabelsRequest request = new DetectLabelsRequest()
-                .withImage(new Image()
-                        .withBytes(imageBytes))
-                .withMaxLabels(10)
-                .withMinConfidence(77F);
+        try (InputStream inputStream = new FileInputStream(new File(targetImage))) {
+            targetImageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
+        }
+        catch(Exception e)
+        {
+            System.out.println("Failed to load target images: " + targetImage);
+            System.exit(1);
+        }
 
-        try {
+        // create request
+        Image source=new Image()
+                .withBytes(sourceImageBytes);
+        Image target=new Image()
+                .withBytes(targetImageBytes);
 
-            DetectLabelsResult result = rekognitionClient.detectLabels(request);
-            List <Label> labels = result.getLabels();
+        CompareFacesRequest request = new CompareFacesRequest()
+                .withSourceImage(source)
+                .withTargetImage(target)
+                .withSimilarityThreshold(similarityThreshold);
 
-            System.out.println("Detected labels for " + photo);
-            for (Label label: labels) {
-                System.out.println(label.getName() + ": " + label.getConfidence().toString());
+        // call operation
+        CompareFacesResult compareFacesResult=rekognitionClient.compareFaces(request);
+
+        // Display results
+        List <CompareFacesMatch> faceDetails = compareFacesResult.getFaceMatches();
+        for (CompareFacesMatch match: faceDetails){
+            ComparedFace face= match.getFace();
+            BoundingBox position = face.getBoundingBox();
+
+            if (StringUtils.isNotBlank(face.getConfidence().toString())){
+                // WRITE CODE HERE
+                System.out.println("Face matches with " + face.getConfidence().toString() + "% confidence.");
             }
-
-        } catch (AmazonRekognitionException e) {
-            e.printStackTrace();
         }
 
+        List<ComparedFace> uncompared = compareFacesResult.getUnmatchedFaces();
+        if (uncompared.size() != 0){
+            // WRITE CODE HERE
+            System.out.println("There was " + uncompared.size() + " face(s) that did not match");
+        }
     }
 }

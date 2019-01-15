@@ -7,5 +7,5 @@ import java.util.Map;
 public interface UserService {
     Map<String, Object> getUsers() throws Exception;
     Object getUser () throws Exception;
-    Object postImage(User user) throws  Exception;
+    String postImage(String imageUrl) throws  Exception;
 }

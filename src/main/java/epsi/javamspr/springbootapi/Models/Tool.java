@@ -1,8 +1,5 @@
 package epsi.javamspr.springbootapi.Models;
-
 import com.google.firebase.internal.NonNull;
-
-import java.util.Map;
 
 public class Tool {
     private int Id;
