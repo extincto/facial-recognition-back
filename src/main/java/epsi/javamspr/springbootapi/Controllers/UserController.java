@@ -22,8 +22,9 @@ public class UserController {
     }
 
     @PostMapping(getUrl)
-    public void postImage(@RequestBody String imageUrl) throws Exception {
-        service.postImage(imageUrl);
+    public Object postImage(@RequestBody String imageUrl) throws Exception {
+        Object userData = service.postImage(imageUrl);
+        return userData;
     }
 
 //    @PostMapping(getUrl)

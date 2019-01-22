@@ -1,4 +1,10 @@
 package epsi.javamspr.springbootapi.Services;
+import com.amazonaws.services.rekognition.AmazonRekognition;
+import com.amazonaws.services.rekognition.AmazonRekognitionClientBuilder;
+import com.amazonaws.services.rekognition.model.CompareFacesMatch;
+import com.amazonaws.services.rekognition.model.CompareFacesRequest;
+import com.amazonaws.services.rekognition.model.CompareFacesResult;
+import com.amazonaws.services.rekognition.model.ComparedFace;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -6,6 +12,7 @@ import epsi.javamspr.springbootapi.Controllers.CompareFaces;
 import epsi.javamspr.springbootapi.Models.Picture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServicempl implements UserService {
     public Map<String, Object> data;
+    public Map<String, Object> userData;
+    public  Float conf;
+
 
     @Autowired
     PicturesServicempl picturesServicempl;
@@ -47,23 +57,27 @@ public class UserServicempl implements UserService {
         return null;
     }
 
-    public String postImage(String imageUrl) throws  Exception {
+    public Object postImage(String imageUrl) throws  Exception {
         List<Picture> listeUrl = picturesServicempl.getPictures();
         CompareFaces.decodeToImage(imageUrl, "1");
         for(Picture url: listeUrl) {
-            TimeUnit.SECONDS.sleep(10);
             CompareFaces.decodeToImage(url.getImageUrl(), "2");
-            CompareFaces.CompareForAuthentication();
+           float rslt = CompareFaces.CompareForAuthentication();
+            if (rslt >= 90) {
+                //FIREBASE GET RECOGNIZED USER DATA
+                Firestore db = FirestoreClient.getFirestore();
+                CollectionReference users = db.collection("Users");
+                // Create a query against the collection.
+                Query query = users.whereEqualTo("Id", url.getIdUser());
+                // retrieve  query results asynchronously using query.get()
+                ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-            Firestore db = FirestoreClient.getFirestore();
-            CollectionReference users = db.collection("Users");
-            // Create a query against the collection.
-            Query query = users.whereEqualTo("Id", url.getIdUser());
-            // retrieve  query results asynchronously using query.get()
-            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+                for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+                    userData = document.getData();
+                    userData.put("ImageUrl", url);
+                    System.out.println(document.getData());
+                }
 
-            for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-                System.out.println(document.getData());
             }
         }
         try{
@@ -73,7 +87,7 @@ public class UserServicempl implements UserService {
         }catch(Exception e){
             e.printStackTrace();
         }
-        return "bien joué!";
+        return userData;
     }
 
 

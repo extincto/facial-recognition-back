@@ -6,4 +6,5 @@ import java.util.List;
 public interface ToolService {
     List<Tool> getTools () throws Exception;
     Object getTool () throws Exception;
+    List<Tool> postTools() throws  Exception;
 }

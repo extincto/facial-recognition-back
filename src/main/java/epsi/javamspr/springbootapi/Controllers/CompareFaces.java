@@ -9,6 +9,7 @@ import com.amazonaws.services.rekognition.AmazonRekognitionClientBuilder;
 import com.amazonaws.services.rekognition.model.*;
 import com.amazonaws.util.IOUtils;
 import software.amazon.awssdk.utils.StringUtils;
+import com.amazonaws.services.rekognition.model.SearchFacesByImageResult;
 
 
 public class CompareFaces {
@@ -25,16 +26,17 @@ public class CompareFaces {
         osf.close();
     }
 
-    public static void CompareForAuthentication() throws Exception{
+    public static Float CompareForAuthentication() throws Exception{
+        float confidence = 0;
         String filePath = new File("").getAbsolutePath();
         String sourceImage = filePath.concat("\\src\\main\\resources\\image1.jpeg");
         String targetImage = filePath.concat("\\src\\main\\resources\\image2.jpeg");
-        Float similarityThreshold = 70F;
         ByteBuffer sourceImageBytes=null;
         ByteBuffer targetImageBytes=null;
+        Float similarityThreshold = 70F;
+
 
         AmazonRekognition rekognitionClient = AmazonRekognitionClientBuilder.defaultClient();
-
         //Load source and target images
         try (InputStream inputStream = new FileInputStream(new File(sourceImage))) {
             sourceImageBytes = ByteBuffer.wrap(IOUtils.toByteArray(inputStream));
@@ -74,15 +76,10 @@ public class CompareFaces {
             BoundingBox position = face.getBoundingBox();
 
             if (StringUtils.isNotBlank(face.getConfidence().toString())){
-                // WRITE CODE HERE
+                confidence = face.getConfidence();
                 System.out.println("Face matches with " + face.getConfidence().toString() + "% confidence.");
             }
         }
-
-        List<ComparedFace> uncompared = compareFacesResult.getUnmatchedFaces();
-        if (uncompared.size() != 0){
-            // WRITE CODE HERE
-            System.out.println("There was " + uncompared.size() + " face(s) that did not match");
-        }
+        return confidence;
     }
 }
