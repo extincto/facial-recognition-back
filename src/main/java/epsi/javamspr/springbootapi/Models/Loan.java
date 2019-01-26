@@ -1,34 +1,26 @@
 package epsi.javamspr.springbootapi.Models;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class Loan {
     private int Id;
-    private Date LoanDate;
-    private Date ReturnDate;
-    private Number ToolId;
-    private Number UserId;
-    private int Quantity;
+    private ArrayList<Double> ToolId;
+    private int UserId;
 
     //********** CONSTRUCTEUR ************
-    public Loan(int Id, Date LoanDate, Date ReturnDate, Number ToolId, Number UserId, int Quantity){
+    public Loan(int Id, ArrayList<Double> ToolId, int UserId){
         this.Id = Id;
-        this.LoanDate = LoanDate;
-        this.ReturnDate = ReturnDate;
         this.ToolId = ToolId;
         this.UserId = UserId;
-        this.Quantity = Quantity;
     }
 
-    public Loan(Date LoanDate, Date ReturnDate, Number ToolId, Number UserId, int Quantity){
-        this.LoanDate = LoanDate;
-        this.ReturnDate = ReturnDate;
+    public Loan( ArrayList<Double> ToolId, int UserId){
         this.ToolId = ToolId;
         this.UserId = UserId;
-        this.Quantity = Quantity;
     }
 
-    //**********GETTER SETTER ************
-    //Id
+    public Loan (){
+    }
+
     public int getId() {
         return Id;
     }
@@ -36,43 +28,17 @@ public class Loan {
         Id = id;
     }
 
-    // LoanDate
-    public Date getLoanDate() {
-        return LoanDate;
-    }
-    public void setLoanDate(Date loanDate) {
-        LoanDate = loanDate;
-    }
-
-    // ReturnDate
-    public Date getReturnDate() {
-        return ReturnDate;
-    }
-    public void setReturnDate(Date returnDate) {
-        ReturnDate = returnDate;
-    }
-
-    // ToolId
-    public Number getToolId() {
+    public ArrayList<Double> getToolId() {
         return ToolId;
     }
-    public void setToolId(Number toolId) {
+    public void setToolId(ArrayList<Double> toolId) {
         ToolId = toolId;
     }
 
-    // UserId
-    public Number getUserId() {
+    public int getUserId() {
         return UserId;
     }
-    public void setUserId(Number userId) {
+    public void setUserId(int userId) {
         UserId = userId;
-    }
-
-    // Quantity
-    public int getQuantity() {
-        return Quantity;
-    }
-    public void setQuantity(int quantity) {
-        Quantity = quantity;
     }
 }

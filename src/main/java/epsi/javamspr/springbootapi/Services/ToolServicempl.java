@@ -2,7 +2,9 @@ package epsi.javamspr.springbootapi.Services;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import epsi.javamspr.springbootapi.Models.Loan;
 import epsi.javamspr.springbootapi.Models.Tool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ public class ToolServicempl implements ToolService {
      *
      * @return list of documents
      */
+    @Autowired
+    UserService UserService;
+
     public List<Tool> getTools() throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = db.collection("Tools").get();
@@ -38,12 +43,64 @@ public class ToolServicempl implements ToolService {
         }
         return null;
     }
-    public List<Tool> postTools() throws Exception {
-        return null;
+    public ArrayList<Integer> postTools(ArrayList<Integer> toolist) throws Exception {
+        String path = "Tools";
+        List<Tool> ToolList = new ArrayList<>();
+        //get tool
+        for(int id: toolist) {
+            Firestore db = FirestoreClient.getFirestore();
+
+            DocumentReference docRef = db.collection(path).document(String.valueOf(id));
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot document = future.get();
+            ToolList.add(document.toObject(Tool.class).withId(String.valueOf(id)));
+        }
+        System.out.println("BITCH result: " + ToolList);
+        System.out.println("BITCH ID: " + UserService.getId());
+
+        // get loan id
+        Firestore db = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future =
+                db.collection("Loans").whereEqualTo("UserId", UserService.getId()).get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<Loan> Loan = new ArrayList<>();
+        for (DocumentSnapshot document : documents) {
+            Loan.add(document.toObject(Loan.class));
+        }
+        // update loan with current tool
+        System.out.println("Write result1: " + Loan.get(0));
+        DocumentReference docRef = db.collection("Loans").document(String.valueOf(Loan.get(0).getId()));
+        ApiFuture<WriteResult> futureloan = docRef.update("ToolId", toolist);
+        WriteResult result = futureloan.get();
+        System.out.println("Write result2: " + result);
+
+//        for (Tool tool: ToolList) {
+//            Firestore db = FirestoreClient.getFirestore();
+//            DocumentReference docRef = db.collection(path).document(String.valueOf(tool.getId()));
+//            int decrementQuantity = tool.getQuantity() - 1;
+//            ApiFuture<WriteResult> future = docRef.update("Quantity", decrementQuantity);
+//            WriteResult result = future.get();
+//            System.out.println("Write result: " + result);
+//        }
+//        System.out.println(ToolList);
+        return toolist;
     }
 
 }
-
+// Integer quantityDecrement = docRef.data().Quantity + 100;
+//    public Object postImage(User user) throws  Exception {
+//        Number Id = user.getId();
+//        String ImageUrl = user.getImageUrl();
+//        String path = "Users";
+//        Firestore db = FirestoreClient.getFirestore();
+//        // Update an existing document
+//        DocumentReference docRef = db.collection(path).document( Id.toString());
+//        // (async) Update one field
+//        ApiFuture<WriteResult> future = docRef.update("ImageUrl", ImageUrl);
+//        WriteResult result = future.get();
+//        System.out.println("Write result: " + result);
+//        return user;
+//    }
 
 
 //    @Override

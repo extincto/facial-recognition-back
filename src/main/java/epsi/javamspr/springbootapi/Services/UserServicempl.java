@@ -9,7 +9,9 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import epsi.javamspr.springbootapi.Controllers.CompareFaces;
+import epsi.javamspr.springbootapi.Models.Loan;
 import epsi.javamspr.springbootapi.Models.Picture;
+import epsi.javamspr.springbootapi.Models.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.utils.StringUtils;
@@ -17,15 +19,15 @@ import software.amazon.awssdk.utils.StringUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServicempl implements UserService {
     public Map<String, Object> data;
     public Map<String, Object> userData;
-    public  Float conf;
+    public int idUser;
 
 
     @Autowired
@@ -71,12 +73,26 @@ public class UserServicempl implements UserService {
                 Query query = users.whereEqualTo("Id", url.getIdUser());
                 // retrieve  query results asynchronously using query.get()
                 ApiFuture<QuerySnapshot> querySnapshot = query.get();
+                idUser = url.getIdUser();
+
+
 
                 for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
                     userData = document.getData();
                     userData.put("ImageUrl", url);
                     System.out.println(document.getData());
                 }
+
+                // search loan of user and tool loaned
+                ApiFuture<QuerySnapshot> future =
+                        db.collection("Loans").whereEqualTo("UserId",  url.getIdUser()).get();
+                List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+                List<Loan> Loan = new ArrayList<>();
+                for (DocumentSnapshot document : documents) {
+                    System.out.println(document.getId() + " => " + document.toObject(Loan.class));
+                    Loan.add(document.toObject(Loan.class));
+                }
+                userData.put("ToolId",Loan.get(0).getToolId());
 
             }
         }
@@ -90,20 +106,7 @@ public class UserServicempl implements UserService {
         return userData;
     }
 
-
-//    public Object postImage(User user) throws  Exception {
-//        Number Id = user.getId();
-//        String ImageUrl = user.getImageUrl();
-//        String path = "Users";
-//        Firestore db = FirestoreClient.getFirestore();
-//        // Update an existing document
-//        DocumentReference docRef = db.collection(path).document( Id.toString());
-//        // (async) Update one field
-//        ApiFuture<WriteResult> future = docRef.update("ImageUrl", ImageUrl);
-//        WriteResult result = future.get();
-//        System.out.println("Write result: " + result);
-//        return user;
-//    }
-
-
+    public int getId() throws  Exception {
+        return idUser;
+    }
 }

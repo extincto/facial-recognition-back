@@ -19,16 +19,10 @@ public class PicturesServicempl implements PictureService {
         Firestore db = FirestoreClient.getFirestore();
         ApiFuture<QuerySnapshot> future = db.collection("Pictures").get();
         List<Picture> PictureList = new ArrayList<>();
-        List<String> UrlList = new ArrayList<>();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot document : documents) {
             PictureList.add((document.toObject(Picture.class)));
         }
-//        for(Picture image64: PictureList){
-//            UrlList.add(image64.getImageUrl());
-//        }
-
-
         return PictureList;
     }
 }

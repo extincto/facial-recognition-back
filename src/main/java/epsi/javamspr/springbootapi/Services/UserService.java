@@ -7,4 +7,5 @@ public interface UserService {
     Map<String, Object> getUsers() throws Exception;
     Object getUser () throws Exception;
     Object postImage(String imageUrl) throws  Exception;
+    int getId() throws  Exception;
 }
