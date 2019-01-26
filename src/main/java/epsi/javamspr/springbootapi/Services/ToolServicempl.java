@@ -55,8 +55,6 @@ public class ToolServicempl implements ToolService {
             DocumentSnapshot document = future.get();
             ToolList.add(document.toObject(Tool.class).withId(String.valueOf(id)));
         }
-        System.out.println("BITCH result: " + ToolList);
-        System.out.println("BITCH ID: " + UserService.getId());
 
         // get loan id
         Firestore db = FirestoreClient.getFirestore();
@@ -74,43 +72,29 @@ public class ToolServicempl implements ToolService {
         WriteResult result = futureloan.get();
         System.out.println("Write result2: " + result);
 
-//        for (Tool tool: ToolList) {
-//            Firestore db = FirestoreClient.getFirestore();
-//            DocumentReference docRef = db.collection(path).document(String.valueOf(tool.getId()));
-//            int decrementQuantity = tool.getQuantity() - 1;
-//            ApiFuture<WriteResult> future = docRef.update("Quantity", decrementQuantity);
-//            WriteResult result = future.get();
-//            System.out.println("Write result: " + result);
-//        }
-//        System.out.println(ToolList);
+        boolean statement = ToolList.isEmpty();
+        System.out.println(toolist.toString());
+        if(toolist.toString() == "xxxxxxxxxxxxxxxxx"){
+            Firestore db1 = FirestoreClient.getFirestore();
+            for (Tool tool: ToolList) {
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$"+tool.getId());
+                DocumentReference docRefIncrement = db1.collection(path).document(String.valueOf(tool.getId()));
+                int incrementQuantity = tool.getQuantity() + 1;
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$"+incrementQuantity);
+                ApiFuture<WriteResult> futureIncrement = docRefIncrement.update("Quantity", incrementQuantity);
+                WriteResult resultIncrement = futureIncrement.get();
+                System.out.println("Write result: " + resultIncrement);
+            }
+        }else {
+            Firestore db2 = FirestoreClient.getFirestore();
+            for (Tool tool: ToolList) {
+                DocumentReference docRefDecrement = db2.collection(path).document(String.valueOf(tool.getId()));
+                int decrementQuantity = tool.getQuantity() - 1;
+                ApiFuture<WriteResult> futureDecrement = docRefDecrement.update("Quantity", decrementQuantity);
+                WriteResult resultDecrement = futureDecrement.get();
+                System.out.println("Write result: " + resultDecrement);
+            }
+        }
         return toolist;
     }
-
 }
-// Integer quantityDecrement = docRef.data().Quantity + 100;
-//    public Object postImage(User user) throws  Exception {
-//        Number Id = user.getId();
-//        String ImageUrl = user.getImageUrl();
-//        String path = "Users";
-//        Firestore db = FirestoreClient.getFirestore();
-//        // Update an existing document
-//        DocumentReference docRef = db.collection(path).document( Id.toString());
-//        // (async) Update one field
-//        ApiFuture<WriteResult> future = docRef.update("ImageUrl", ImageUrl);
-//        WriteResult result = future.get();
-//        System.out.println("Write result: " + result);
-//        return user;
-//    }
-
-
-//    @Override
-//    public List<QueryDocumentSnapshot> getTools() throws Exception {
-//        Firestore db = FirestoreClient.getFirestore();
-//        ApiFuture<QuerySnapshot> future = db.collection("Tools").get();
-//        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-//        for (QueryDocumentSnapshot document : documents) {
-//            System.out.println(document.getData());
-//            document.toObject(Tool.class);
-//        }
-//        return documents;
-//    }
