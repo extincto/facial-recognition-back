@@ -9,4 +9,5 @@ public interface ToolService {
     List<Tool> getTools () throws Exception;
     Object getTool () throws Exception;
     ArrayList<Integer> postTools(ArrayList<Integer> toolist) throws  Exception;
+    ArrayList<Integer> retourTools(ArrayList<Integer> toolist) throws  Exception;
 }

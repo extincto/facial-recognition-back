@@ -14,6 +14,7 @@ public class ToolController {
     @Autowired
     ToolServicempl service;
     private final static String posttools = "/posttools";
+    private final static String retourtools = "/retourtools";
 
     @RequestMapping(method = RequestMethod.GET, value = "/tools", produces = "application/json; charset=UTF-8")
     @ResponseBody
@@ -33,6 +34,12 @@ public class ToolController {
     public ArrayList<Integer> postTools(@RequestBody ArrayList<Integer> toolist) throws Exception {
         ArrayList<Integer> tool_list = service.postTools(toolist);
         return tool_list;
+    }
+
+    @PostMapping(retourtools)
+    public ArrayList<Integer> retourTools(@RequestBody ArrayList<Integer> toolist) throws Exception {
+        ArrayList<Integer> retour_tool_list = service.retourTools(toolist);
+        return retour_tool_list;
     }
 }
 
