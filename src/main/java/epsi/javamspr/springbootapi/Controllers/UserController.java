@@ -27,6 +27,11 @@ public class UserController {
         return userData;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/textdetector")
+    public Object AndroidGetText(String Path, String Photo) throws Exception {
+        return service.AndroidGetText(Path, Photo);
+
+    }
 //    @PostMapping(getUrl)
 //    public ResponseEntity<User> postImage(@RequestBody User user){
 //        System.out.println("get image url: " + user.getImageUrl());

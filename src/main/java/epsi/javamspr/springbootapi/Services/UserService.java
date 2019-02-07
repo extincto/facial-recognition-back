@@ -8,4 +8,5 @@ public interface UserService {
     Object getUser () throws Exception;
     Object postImage(String imageUrl) throws  Exception;
     int getId() throws  Exception;
+    Object AndroidGetText(String Path, String photo) throws  Exception;
 }

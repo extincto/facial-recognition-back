@@ -1,20 +1,15 @@
 package epsi.javamspr.springbootapi.Services;
-import com.amazonaws.services.rekognition.AmazonRekognition;
-import com.amazonaws.services.rekognition.AmazonRekognitionClientBuilder;
-import com.amazonaws.services.rekognition.model.CompareFacesMatch;
-import com.amazonaws.services.rekognition.model.CompareFacesRequest;
-import com.amazonaws.services.rekognition.model.CompareFacesResult;
-import com.amazonaws.services.rekognition.model.ComparedFace;
+
+
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import epsi.javamspr.springbootapi.Controllers.AndroidController;
 import epsi.javamspr.springbootapi.Controllers.CompareFaces;
 import epsi.javamspr.springbootapi.Models.Loan;
 import epsi.javamspr.springbootapi.Models.Picture;
-import epsi.javamspr.springbootapi.Models.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -105,7 +100,11 @@ public class UserServicempl implements UserService {
         }
         return userData;
     }
+    public Object AndroidGetText(String Path, String photo) throws Exception {
+        Object data = AndroidController.AndroidGetText(Path, photo);
+        return data;
 
+    }
     public int getId() throws  Exception {
         return idUser;
     }
