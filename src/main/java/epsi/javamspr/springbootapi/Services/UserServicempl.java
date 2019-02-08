@@ -102,6 +102,8 @@ public class UserServicempl implements UserService {
     }
     public Object AndroidGetText(String Path, String photo) throws Exception {
         Object data = AndroidController.AndroidGetText(Path, photo);
+        //Add text detected and cropped picture to firebase
+//        float rslt = CompareFaces.CompareForAuthentication();
         return data;
 
     }
